@@ -1,0 +1,16 @@
+{
+  "name": "my-netlify-project",
+  "version": "1.0.0",
+  "description": "A project using Netlify Functions for login",
+  "main": "index.js",
+  "scripts": {
+    "start": "netlify dev"  
+  },
+  "dependencies": {
+    "jsonwebtoken": "^8.5.1"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": "14.x"  
+  }
+}

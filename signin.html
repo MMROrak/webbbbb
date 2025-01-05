@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="signin.css">
+    <link rel="stylesheet" href="signin.js">
+    
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <h2>Login</h2>
+            <form id="login-form">
+                <div class="input-group">
+                    <label for="email">e-mail</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter the password" required>
+                </div>
+                <div class="forgot-password">
+                    <a href="#">? Forgot your password </a>
+                </div>
+                <button type="submit" class="login-btn">Login</button>
+                <div class="signup-link">
+                    <p class="login-link">? Don't have an account </p> <a href="creatacco.html"> Create a new account</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+document.getElementById("login-form").addEventListener("submit", function(event) {
+    event.preventDefault();  // Prevent form submission
+
+    // Get the email and password entered by the user
+    var enteredEmail = document.getElementById("email").value;
+    var enteredPassword = document.getElementById("password").value;
+
+    // Validate email format using regex
+    var emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    if (!emailRegex.test(enteredEmail)) {
+        alert("Please enter a valid email address.");
+        return; // Prevent form submission if invalid
+    }
+
+    // Simple password validation
+    if (enteredPassword.length < 8) {
+        alert("Password must be at least 8 characters long.");
+        return; // Prevent form submission if invalid
+    }
+
+    // Send data to the server for verification
+    var loginData = {
+        email: enteredEmail,
+        password: enteredPassword
+    };
+
+    fetch('/.netlify/functions/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(loginData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Store the JWT token securely in HttpOnly cookies
+            document.cookie = `token=${data.token}; path=/; HttpOnly`;
+
+            // Redirect based on the user's role
+            if (data.role === 'admin') {
+                window.location.href = "admin-dashboard.html";
+            } else {
+                window.location.href = "intindex.html";
+            }
+        } else {
+            alert("Invalid email or password.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred. Please try again.");
+    });
+});
+    </script>
+</body>
+</html>
